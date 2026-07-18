@@ -16,7 +16,7 @@
         <main>
             <div id="top-bar">
                 <select id="binary-input"></select>
-                <select id="function-input"></select>
+                <input type="text" id="function-input"></input>
 
                 <h1 class="right">GD Web Decomp</h1>
             </div>
@@ -27,9 +27,12 @@
             </div>
         </main>
 
-        <script src="/monaco/min/vs/loader.js"></script>
+        <div id="search-overlay" style="display: none"></div>
+
+        <script src="/node_module/fuse/dist/fuse.basic.min.mjs" type="module"></script>
+        <script src="/node_module/monaco/min/vs/loader.js"></script>
         <script src="/{{BINARY}}/{{FUNCTION}}/load-monaco.js"></script>
-        <script src="/{{BINARY}}/{{FUNCTION}}/load-inputs.js"></script>
+        <script src="/{{BINARY}}/{{FUNCTION}}/load-inputs.js" type="module"></script>
         <script src="/{{BINARY}}/{{FUNCTION}}/draggable-bar.js"></script>
     </body>
 </html>

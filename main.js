@@ -1,4 +1,3 @@
-import { FILE } from "dns";
 import * as fs from "fs/promises"
 
 let defaultFunctions = [
@@ -16,7 +15,7 @@ let aggressiveCachingHeaders = {
     "Cache-Control": "public, max-age=3600, immutable"
 };
 
-let monacoCachingHeaders = {
+let libraryCachingHeaders = {
     "Cache-Control": "public, max-age=86400, immutable"
 }
 
@@ -59,6 +58,9 @@ let server = Bun.serve({
         },
 
         "/:binary/:function/data.json": async req => {
+            let file = Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.binary}/${req.params.function}.json`);
+            if (!await file.exists()) { return new Response("404 Not Found", { status: 404 }); }
+
             return new Response(Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.binary}/${req.params.function}.json`), { headers: aggressiveCachingHeaders });
         },
 
@@ -71,19 +73,27 @@ let server = Bun.serve({
             js = js.replaceAll("{{FUNCTION}}", `${req.params.function}`);
             return new Response(js, { headers: { "Content-Type": file.type } });
         },
-    },
 
-    async fetch(req) {
-        let url = new URL(req.url);
+        "/node_module/*": async req => {
+            let url = new URL(req.url);
+            let path = url.pathname.replace("/node_module/", "");
 
-        if (url.pathname.startsWith("/monaco/")) {
-            let file = Bun.file(`./node_modules/${url.pathname.replace("/monaco/", "monaco-editor/")}`);
-            if (await file.exists()) {
-                return new Response(file, { headers: monacoCachingHeaders });
+            let modules = {
+                "monaco": "monaco-editor",
+                "fuse": "fuse.js"
+            };
+
+            for (let [ fakePath, realPath ] of Object.entries(modules)) {
+                if (path.startsWith(`${fakePath}/`)) {
+                    let file = Bun.file(`./node_modules/${path.replace(`${fakePath}/`, `${realPath}/`)}`);
+                    if (await file.exists()) {
+                        return new Response(file, { headers: libraryCachingHeaders });
+                    }
+                }
             }
-        }
 
-        return new Response(Bun.file("./public/404.html"));
+            return new Response(Bun.file("./public/404.html"));
+        }
     }
 });
 

@@ -6,7 +6,7 @@
 // TODO: get a better import system or whatever
 // TODO: ctrl+click support
 
-require.config({ paths: { vs: "/monaco/min/vs" } });
+require.config({ paths: { vs: "/node_module/monaco/min/vs" } });
 require(["vs/editor/editor.main"], async () => {
     // https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.editor.IStandaloneEditorConstructionOptions.html
     const params = {
