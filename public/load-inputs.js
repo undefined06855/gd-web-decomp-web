@@ -51,12 +51,20 @@ async function loadFunctionInput() {
     }
 
     input.addEventListener("keydown", event => {
-        if (event.key == "Enter") {
+        if (event.code == "Enter") {
             overlay.children[0].click();
         } else {
             search();
         }
     });
+
+    window.addEventListener("keydown", event => {
+        console.log("y");
+        if (event.code == "KeyF" && event.ctrlKey) {
+            event.preventDefault();
+            input.focus();
+        }
+    })
 
     // input.addEventListener("blur", unsearch);
     window.addEventListener("click", event => {
