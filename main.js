@@ -1,14 +1,14 @@
 import * as fs from "fs/promises"
 
 let defaultFunctions = [
-    "GeometryDash.exe/PlayLayer__init",
-    "GeometryDash.exe/MenuLayer__init",
-    "GeometryDash.exe/CreatorLayer__init",
-    "GeometryDash.exe/GJBaseGameLayer__update",
-    "GeometryDash.exe/PauseLayer__customSetup",
-    "GeometryDash.exe/PlayLayer__postUpdate",
-    "GeometryDash.exe/PlayerObject__init",
-    "GeometryDash.exe/LevelCell__loadCustomLevelCell",
+    "libcocos2dcpp-32.so/PlayLayer__init",
+    "libcocos2dcpp-32.so/MenuLayer__init",
+    "libcocos2dcpp-32.so/CreatorLayer__init",
+    "libcocos2dcpp-32.so/GJBaseGameLayer__update",
+    "libcocos2dcpp-32.so/PauseLayer__customSetup",
+    "libcocos2dcpp-32.so/PlayLayer__postUpdate",
+    "libcocos2dcpp-32.so/PlayerObject__init",
+    "libcocos2dcpp-32.so/LevelCell__loadCustomLevelCell",
 ]
 
 let server = Bun.serve({
