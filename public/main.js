@@ -19,7 +19,7 @@ require(["vs/editor/editor.main"], async () => {
         document.getElementById("assembly"),
         {
             language: "asm",
-            value: json.assembly,
+            value: `${json.assembly}\n`,
             minimap: { enabled: false },
             ...params
         }
@@ -29,7 +29,7 @@ require(["vs/editor/editor.main"], async () => {
         document.getElementById("pseudocode"),
         {
             language: "cpp",
-            value: json.pseudocode,
+            value: `${json.pseudocode}\n`,
             minimap: { enabled: true },
             ...params
         }
