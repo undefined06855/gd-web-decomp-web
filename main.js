@@ -1,3 +1,4 @@
+import { FILE } from "dns";
 import * as fs from "fs/promises"
 
 let defaultFunctions = [
@@ -12,7 +13,6 @@ let defaultFunctions = [
 ];
 
 let aggressiveCachingHeaders = {
-    "Content-Type": "application/json",
     "Cache-Control": "public, max-age=3600, immutable"
 };
 
@@ -26,8 +26,6 @@ let server = Bun.serve({
             let randomFunction = defaultFunctions[~~(Math.random() * defaultFunctions.length)];
             return Response.redirect(`/${randomFunction}`);
         },
-
-        "/style.css": Bun.file("./public/style.css"),
 
         "/binaries.json": async req => {
             let ret = [];
@@ -57,7 +55,7 @@ let server = Bun.serve({
             let html = await file.text();
             html = html.replaceAll("{{BINARY}}", `${req.params.binary}`);
             html = html.replaceAll("{{FUNCTION}}", `${req.params.function}`);
-            return new Response(html, { headers: { "Content-Type": "text/html" } });
+            return new Response(html, { headers: { "Content-Type": file.type } });
         },
 
         "/:binary/:function/data.json": async req => {
@@ -71,7 +69,7 @@ let server = Bun.serve({
             let js = await file.text();
             js = js.replaceAll("{{BINARY}}", `${req.params.binary}`);
             js = js.replaceAll("{{FUNCTION}}", `${req.params.function}`);
-            return new Response(js, { headers: { "Content-Type": "text/javascript" } });
+            return new Response(js, { headers: { "Content-Type": file.type } });
         },
     },
 
