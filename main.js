@@ -60,6 +60,10 @@ let server = Bun.serve({
             return new Response(html, { headers: { "Content-Type": "text/html" } });
         },
 
+        "/:binary/:function/data.json": async req => {
+            return new Response(Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.binary}/${req.params.function}.json`), { headers: aggressiveCachingHeaders });
+        },
+
         "/:binary/:function/:file": async req => {
             let file = Bun.file(`./public/${req.params.file}`);
             if (!await file.exists()) { return new Response("404 Not Found", { status: 404 }); }
@@ -69,10 +73,6 @@ let server = Bun.serve({
             js = js.replaceAll("{{FUNCTION}}", `${req.params.function}`);
             return new Response(js, { headers: { "Content-Type": "text/javascript" } });
         },
-
-        "/:binary/:function/data.json": async req => {
-            return new Response(Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.binary}/${req.params.function}.json`), { headers: aggressiveCachingHeaders });
-        }
     },
 
     async fetch(req) {
