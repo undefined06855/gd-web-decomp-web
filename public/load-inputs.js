@@ -50,8 +50,13 @@ async function loadFunctionInput() {
         overlay.style.display = "none";
     }
 
-    input.addEventListener("keydown", search);
-    input.addEventListener("focus", search);
+    input.addEventListener("keydown", event => {
+        if (event.key == "Enter") {
+            overlay.children[0].click();
+        } else {
+            search();
+        }
+    });
 
     // input.addEventListener("blur", unsearch);
     window.addEventListener("click", event => {
@@ -68,6 +73,8 @@ async function loadFunctionInput() {
 
     window.addEventListener("resize", updateOverlayPosition);
     updateOverlayPosition();
+
+    input.focus();
 }
 
 async function loadBinaryInput() {
