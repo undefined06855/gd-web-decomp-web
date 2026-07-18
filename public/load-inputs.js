@@ -82,7 +82,7 @@ async function loadFunctionInput() {
     window.addEventListener("resize", updateOverlayPosition);
     updateOverlayPosition();
 
-    input.focus();
+    if (window.innerWidth > 700) input.focus();
 }
 
 async function loadBinaryInput() {
