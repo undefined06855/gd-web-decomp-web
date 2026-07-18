@@ -41,7 +41,7 @@ let dragging = false;
 
 bar.addEventListener("pointerdown", event => {
     dragging = true;
-    bar.setPointerCapture(event.pointerId)
+    bar.setPointerCapture(event.pointerId);
 });
 
 bar.addEventListener("pointermove", event => {
