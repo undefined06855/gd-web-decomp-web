@@ -9,7 +9,16 @@ let defaultFunctions = [
     "libcocos2dcpp-32.so/PlayLayer__postUpdate",
     "libcocos2dcpp-32.so/PlayerObject__init",
     "libcocos2dcpp-32.so/LevelCell__loadCustomLevelCell",
-]
+];
+
+let aggressiveCachingHeaders = {
+    "Content-Type": "application/json",
+    "Cache-Control": "public, max-age=3600, immutable"
+};
+
+let monacoCachingHeaders = {
+    "Cache-Control": "public, max-age=86400, immutable"
+}
 
 let server = Bun.serve({
     routes: {
@@ -27,7 +36,7 @@ let server = Bun.serve({
                 ret.push(file);
             }
 
-            return new Response(JSON.stringify(ret), { headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify(ret), { headers: aggressiveCachingHeaders });
         },
 
         "/:binary/functions.json": async req => {
@@ -38,25 +47,31 @@ let server = Bun.serve({
                 ret.push(file.replace(".json", ""));
             }
 
-            return new Response(JSON.stringify(ret), { headers: { "Content-Type": "application/json" } });
+            return new Response(JSON.stringify(ret), { headers: aggressiveCachingHeaders });
         },
 
         "/:binary/:function": async req => {
-            let html = await Bun.file("./public/index.html").text();
+            let file = Bun.file("./public/index.html");
+            if (!await file.exists()) { return new Response("404 Not Found", { status: 404 }); }
+
+            let html = await file.text();
             html = html.replaceAll("{{BINARY}}", `${req.params.binary}`);
             html = html.replaceAll("{{FUNCTION}}", `${req.params.function}`);
             return new Response(html, { headers: { "Content-Type": "text/html" } });
         },
 
-        "/:binary/:function/main.js": async req => {
-            let js = await Bun.file("./public/main.js").text();
+        "/:binary/:function/:file": async req => {
+            let file = Bun.file(`./public/${req.params.file}`);
+            if (!await file.exists()) { return new Response("404 Not Found", { status: 404 }); }
+
+            let js = await file.text();
             js = js.replaceAll("{{BINARY}}", `${req.params.binary}`);
             js = js.replaceAll("{{FUNCTION}}", `${req.params.function}`);
             return new Response(js, { headers: { "Content-Type": "text/javascript" } });
         },
 
         "/:binary/:function/data.json": async req => {
-            return new Response(Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.binary}/${req.params.function}.json`));
+            return new Response(Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.binary}/${req.params.function}.json`), { headers: aggressiveCachingHeaders });
         }
     },
 
@@ -66,7 +81,7 @@ let server = Bun.serve({
         if (url.pathname.startsWith("/monaco/")) {
             let file = Bun.file(`./node_modules/${url.pathname.replace("/monaco/", "monaco-editor/")}`);
             if (await file.exists()) {
-                return new Response(file);
+                return new Response(file, { headers: monacoCachingHeaders });
             }
         }
 
