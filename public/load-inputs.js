@@ -59,7 +59,6 @@ async function loadFunctionInput() {
     });
 
     window.addEventListener("keydown", event => {
-        console.log("y");
         if (event.code == "KeyF" && event.ctrlKey) {
             event.preventDefault();
             input.focus();
