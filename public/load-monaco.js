@@ -1,7 +1,6 @@
 // this code is so ugly
 
 // TODO: language suppot for not c++
-// TODO: proper search bar
 // TODO: maybe dont reload the whole page on page change?
 // TODO: get a better import system or whatever
 // TODO: ctrl+click support
@@ -18,6 +17,11 @@ require(["vs/editor/editor.main"], async () => {
     }
 
     let res = await fetch("/{{BINARY}}/{{FUNCTION}}/data.json");
+    if (res.status == 404) {
+        document.querySelector("#http-cat-image").style.display = "block";
+        return;
+    }
+
     let json = await res.json();
 
     monaco.editor.create(

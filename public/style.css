@@ -8,6 +8,8 @@ html, body {
 }
 
 main {
+    position: relative;
+
     height: 100%;
 
     display: flex;
@@ -28,11 +30,28 @@ main {
         padding: 0px 10px;
         height: 50px;
 
-        > h1.right {
+        > .right {
             margin: 4px;
             margin-left: auto;
-            color: white;
-            font-size: 20px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            > h1 {
+                color: white;
+                margin: 0px;
+                font-size: 20px;
+            }
+
+            > div {
+                color: white;
+                font-size: 10px;
+
+                > a {
+                    color: white;
+                }
+            }
         }
 
         > select, > input {
@@ -71,6 +90,18 @@ main {
             cursor: ew-resize;
         }
     }
+
+    > #http-cat-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
+
+        width: 700px;
+        max-width: 80%;
+
+        border-radius: 10px;
+    }
 }
 
 div#search-overlay {
@@ -80,7 +111,7 @@ div#search-overlay {
     flex-direction: column;
     gap: 1px;
 
-    background-color: #272737c9;
+    background-color: #23232e5d;
     backdrop-filter: blur(60px);
     border-radius: 20px;
     padding: 15px;

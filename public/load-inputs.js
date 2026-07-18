@@ -1,22 +1,6 @@
 import { FuseWorker } from '/node_module/fuse/dist/fuse-worker.mjs'
 
 async function loadFunctionInput() {
-    // let input = document.querySelector("#function-input");
-    // let res = await fetch("/{{BINARY}}/functions.json");
-    // let json = await res.json();
-
-    // for (let func of json) {
-    //     let el = document.createElement("option");
-    //     el.value = func;
-    //     el.innerText = func;
-    //     input.appendChild(el);
-    // }
-
-    // input.value = "{{FUNCTION}}";
-    // input.addEventListener("input", event => {
-    //     window.location.href = `/{{BINARY}}/${input.value}`
-    // });
-
     let input = document.querySelector("#function-input");
     let overlay = document.querySelector("#search-overlay");
 
