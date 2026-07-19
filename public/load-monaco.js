@@ -24,7 +24,51 @@ require(["vs/editor/editor.main"], async () => {
 
     let json = await res.json();
 
-    monaco.editor.create(
+    function doShitForEditor(editor, editorType) {
+        editor.onDidChangeCursorSelection(event => {
+            // https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.ISelection.html
+            let selection = event.selection;
+            let hashString = `${editorType}=${selection.selectionStartLineNumber},${selection.selectionStartColumn},${selection.positionLineNumber},${selection.positionColumn}`;
+
+            let hashes = window.location.hash.slice(1).split("$");
+            let replacedExisting = false;
+            for (let [i, hash] of Object.entries(hashes)) {
+                let [ editorID, _ ] = hash.split("=");
+                if (editorID == editorType) {
+                    replacedExisting = true;
+                    hashes[i] = hashString;
+                    break;
+                }
+            }
+
+            if (!replacedExisting) {
+                hashes.push(hashString);
+            }
+
+            window.location.hash = hashes.join("$");
+        });
+
+        let hashes = window.location.hash.slice(1).split("$");
+        for (let hash of hashes) {
+            let [ editorID, location ] = hash.split("=");
+            if (editorID != editorType) continue;
+
+            // https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.editor.IStandaloneCodeEditor.html#setSelection
+            let split = location.split(",");
+            editor.setSelection({
+                selectionStartLineNumber: Number(split[0]),
+                selectionStartColumn: Number(split[1]),
+                positionLineNumber: Number(split[2]),
+                positionColumn: Number(split[3])
+            });
+            editor.revealLineInCenter(Number(split[0]));
+            
+            break;
+        }
+
+    }
+
+    doShitForEditor(monaco.editor.create(
         document.getElementById("assembly"),
         {
             language: "asm",
@@ -32,9 +76,9 @@ require(["vs/editor/editor.main"], async () => {
             minimap: { enabled: false },
             ...params
         }
-    );
+    ), "assembly");
 
-    monaco.editor.create(
+    doShitForEditor(monaco.editor.create(
         document.getElementById("pseudocode"),
         {
             language: "cpp",
@@ -42,5 +86,5 @@ require(["vs/editor/editor.main"], async () => {
             minimap: { enabled: true },
             ...params
         }
-    );
+    ), "pseudocode");
 });
