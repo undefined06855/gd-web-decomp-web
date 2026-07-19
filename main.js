@@ -34,6 +34,8 @@ let server = Bun.serve({
                 ret.push(file);
             }
 
+            ret.sort();
+
             return new Response(JSON.stringify(ret), { headers: aggressiveCachingHeaders });
         },
 
