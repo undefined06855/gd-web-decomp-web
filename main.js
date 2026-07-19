@@ -34,7 +34,7 @@ let server = Bun.serve({
                 ret.push(file);
             }
 
-            ret.sort();
+            ret.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
             return new Response(JSON.stringify(ret), { headers: aggressiveCachingHeaders });
         },
