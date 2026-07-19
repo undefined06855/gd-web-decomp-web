@@ -30,6 +30,7 @@ let server = Bun.serve({
             let ret = [];
 
             for (let file of await fs.readdir(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}`)) {
+                if (await Bun.file(file).exists()) continue; // this is a file not a directory
                 ret.push(file);
             }
 
