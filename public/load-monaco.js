@@ -62,10 +62,11 @@ require(["vs/editor/editor.main"], async () => {
                 positionColumn: Number(split[3])
             });
             editor.revealLineInCenter(Number(split[0]));
-            
+
             break;
         }
 
+        return editor
     }
 
     doShitForEditor(monaco.editor.create(
@@ -78,13 +79,35 @@ require(["vs/editor/editor.main"], async () => {
         }
     ), "assembly");
 
-    doShitForEditor(monaco.editor.create(
+    /** @type {string} */
+    let pseudocode = json.pseudocode;
+
+    let localVariablesStart = pseudocode.indexOf("\n{") + 2;
+    let localVariablesEnd = pseudocode.indexOf("\n\n", localVariablesStart);
+
+    let before = pseudocode.substring(0, localVariablesStart);
+    let localVars = pseudocode.substring(localVariablesStart, localVariablesEnd);
+    let after = pseudocode.substring(localVariablesEnd);
+
+    pseudocode = `${before}\n#pragma region local vars${localVars}\n#pragma endregion local vars${after}`;
+
+    let pseudocodeEditor = doShitForEditor(monaco.editor.create(
         document.getElementById("pseudocode"),
         {
             language: "cpp",
-            value: `${json.pseudocode}\n`,
+            value: `${pseudocode}\n`,
             minimap: { enabled: true },
             ...params
         }
     ), "pseudocode");
+
+    // this is an internal api or something? not sure but i cant find documentation for it anywhere
+    // anyway this works i checked the minified source
+    let foldingModel = pseudocodeEditor.getContribution("editor.contrib.folding").foldingModel;
+    let callback = foldingModel.onDidChange(() => {
+        callback.dispose();
+        foldingModel.toggleCollapseState([{
+            regionIndex: 0
+        }]);
+    });
 });
