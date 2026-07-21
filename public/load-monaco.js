@@ -12,8 +12,12 @@ require(["vs/editor/editor.main"], async () => {
         theme: "vs-dark",
         automaticLayout: true,
         readOnly: true,
-        domReadOnly: true,
+        // domReadOnly: true,
         tabSize: 2, // ...sadly
+    };
+
+    if (window.innerWidth < 700) {
+        params["fontSize"] = 10;
     }
 
     let res = await fetch("/{{BINARY}}/{{FUNCTION}}/data.json");
@@ -85,11 +89,13 @@ require(["vs/editor/editor.main"], async () => {
     let localVariablesStart = pseudocode.indexOf("\n{") + 2;
     let localVariablesEnd = pseudocode.indexOf("\n\n", localVariablesStart);
 
-    let before = pseudocode.substring(0, localVariablesStart);
-    let localVars = pseudocode.substring(localVariablesStart, localVariablesEnd);
-    let after = pseudocode.substring(localVariablesEnd);
+    if (localVariablesEnd != -1) {
+        let before = pseudocode.substring(0, localVariablesStart);
+        let localVars = pseudocode.substring(localVariablesStart, localVariablesEnd);
+        let after = pseudocode.substring(localVariablesEnd);
 
-    pseudocode = `${before}\n#pragma region local vars${localVars}\n#pragma endregion local vars${after}`;
+        pseudocode = `${before}\n#pragma region local vars${localVars}\n#pragma endregion local vars${after}`;
+    }
 
     let pseudocodeEditor = doShitForEditor(monaco.editor.create(
         document.getElementById("pseudocode"),
@@ -101,13 +107,15 @@ require(["vs/editor/editor.main"], async () => {
         }
     ), "pseudocode");
 
-    // this is an internal api or something? not sure but i cant find documentation for it anywhere
-    // anyway this works i checked the minified source
-    let foldingModel = pseudocodeEditor.getContribution("editor.contrib.folding").foldingModel;
-    let callback = foldingModel.onDidChange(() => {
-        callback.dispose();
-        foldingModel.toggleCollapseState([{
-            regionIndex: 0
-        }]);
-    });
+    if (localVariablesEnd != -1) {
+        // this is an internal api or something? not sure but i cant find documentation for it anywhere
+        // anyway this works i checked the minified source
+        let foldingModel = pseudocodeEditor.getContribution("editor.contrib.folding").foldingModel;
+        let callback = foldingModel.onDidChange(() => {
+            callback.dispose();
+            foldingModel.toggleCollapseState([{
+                regionIndex: 0
+            }]);
+        });
+    }
 });

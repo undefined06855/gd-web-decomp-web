@@ -12,7 +12,7 @@ async function loadFunctionInput() {
 
     async function search() {
         let results = await fuse.search(input.value);
-        results = results.slice(0, 30);
+        results = results.slice(0, 100);
         let children = [];
 
         for (let result of results) {
