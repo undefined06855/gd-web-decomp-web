@@ -73,7 +73,7 @@ require(["vs/editor/editor.main"], async () => {
         return editor
     }
 
-    doShitForEditor(monaco.editor.create(
+    window.assemblyEditor = doShitForEditor(monaco.editor.create(
         document.getElementById("assembly"),
         {
             language: "asm",
@@ -86,18 +86,27 @@ require(["vs/editor/editor.main"], async () => {
     /** @type {string} */
     let pseudocode = json.pseudocode;
 
-    let localVariablesStart = pseudocode.indexOf("\n{") + 2;
-    let localVariablesEnd = pseudocode.indexOf("\n\n", localVariablesStart);
+    window.localVariablesStart = pseudocode.indexOf("\n{") + 2;
+    window.localVariablesEnd = pseudocode.indexOf("\n\n", localVariablesStart);
+
+    window.lineThatPragmaStartsOn = 0;
 
     if (localVariablesEnd != -1) {
-        let before = pseudocode.substring(0, localVariablesStart);
-        let localVars = pseudocode.substring(localVariablesStart, localVariablesEnd);
-        let after = pseudocode.substring(localVariablesEnd);
+        window.before = pseudocode.substring(0, localVariablesStart);
+        window.localVars = pseudocode.substring(localVariablesStart, localVariablesEnd);
+        window.after = pseudocode.substring(localVariablesEnd);
 
         pseudocode = `${before}\n#pragma region local vars${localVars}\n#pragma endregion local vars${after}`;
+
+        for (let [i, line] of Object.entries(pseudocode.split("\n"))) {
+            if (line.startsWith("#pragma region local vars")) {
+                lineThatPragmaStartsOn = parseInt(i)+1;
+                break;
+            }
+        }
     }
 
-    let pseudocodeEditor = doShitForEditor(monaco.editor.create(
+    window.pseudocodeEditor = doShitForEditor(monaco.editor.create(
         document.getElementById("pseudocode"),
         {
             language: "cpp",
@@ -110,12 +119,18 @@ require(["vs/editor/editor.main"], async () => {
     if (localVariablesEnd != -1) {
         // this is an internal api or something? not sure but i cant find documentation for it anywhere
         // anyway this works i checked the minified source
-        let foldingModel = pseudocodeEditor.getContribution("editor.contrib.folding").foldingModel;
+        window.foldingModel = pseudocodeEditor.getContribution("editor.contrib.folding").foldingModel;
         let callback = foldingModel.onDidChange(() => {
             callback.dispose();
-            foldingModel.toggleCollapseState([{
-                regionIndex: 0
-            }]);
+
+            for (let regionIndex = 0; regionIndex < foldingModel.regions.length; regionIndex++) {
+                if (foldingModel.regions.toRegion(regionIndex).startLineNumber == lineThatPragmaStartsOn) {
+                    foldingModel.toggleCollapseState([{ regionIndex }]);
+                    break;
+                }
+            }
+
+            console.warn(`failed to find region index to toggle out of ${foldingModel.regions.length} regions!`);
         });
     }
 });
