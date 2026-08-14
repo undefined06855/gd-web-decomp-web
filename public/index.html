@@ -11,12 +11,22 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+        <meta name="description" content="View the decompiled source of {{FUNCTION}} from {{BINARY}}! (or other functions, I guess)" />
+
+        <meta property="og:url" content="https://gd-src.undefined0.dev/" />
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="GD Web Decomp">
+        <meta property="og:description" content="View the decompiled source of {{FUNCTION}} from {{BINARY}}! (or other functions, I guess)">
+        <!-- <meta property="og:image" content="https://gd-src.undefined0.dev/resources/embed.png"> -->
     </head>
     <body>
         <main>
             <div id="top-bar">
-                <select id="binary-input"></select>
-                <input type="text" id="function-input" autocomplete="off"></input>
+                <select id="binary-input" aria-label="GD Binary Input"></select>
+                <input type="text" id="function-input" autocomplete="off" aria-label="GD Function Input"></input>
 
                 <div class="right">
                     <h1>GD Web Decomp</h1>
