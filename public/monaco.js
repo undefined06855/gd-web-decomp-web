@@ -72,6 +72,8 @@ class MonacoEditor {
 
         let lineThatPragmaStartsOn = 0;
 
+        if (text.includes("Failed to decompile!")) localVariablesEnd = -1;
+
         if (this.id == "pseudocode" && localVariablesEnd != -1) {
             let before = text.substring(0, localVariablesStart);
             let localVars = text.substring(localVariablesStart, localVariablesEnd);

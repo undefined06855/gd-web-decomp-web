@@ -1,4 +1,4 @@
-import { setupInputs, updateInputs } from "./inputs.js";
+import { fetchInputData, setupBinaryInput, setupFunctionInput, setupVersionInput, updateInputs } from "./inputs.js";
 import { loadFromServerData } from "./monaco.js";
 
 const defaultState = {
@@ -36,7 +36,14 @@ export async function updateAll(isNavigating = true) {
 
 // TODO: going backwards and forwards a bit buggy still
 window.addEventListener("popstate", async event => {
-    console.log(`popstate: ${event.state?.presetData}`)
+    console.log(`popstate: ${event.state?.presetData}`);
+
+    // in an ideal world this would never happen...
+    if (event.state?.presetData === undefined && window.location.pathname != "/") {
+        console.error(`no presetData in popstate event but window location is ${window.location.pathname}! Reloading...`);
+        window.location.reload();
+    }
+
     window.presetData = event.state?.presetData ?? { ...defaultState };
     await updateAll(false);
 });
@@ -51,5 +58,12 @@ if (!window.presetData) {
     window.presetData = { ...defaultState };
 }
 
-await setupInputs();
+await fetchInputData();
+setupBinaryInput();
+setupVersionInput();
+setupFunctionInput();
 await updateAll(false);
+
+Array.from(document.querySelectorAll("img")).forEach(img => img.addEventListener("dragstart", event => {
+    event.preventDefault();
+}))

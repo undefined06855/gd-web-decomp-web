@@ -1,5 +1,7 @@
 import * as fs from "fs/promises"
 
+const outputDir = process.env["GD_WEB_DECOMP_OUTPUT_DIR"];
+
 let server = Bun.serve({
     routes: {
         "/node_module/*": async req => {
@@ -32,7 +34,7 @@ let server = Bun.serve({
         "/": Bun.file("public/index.html"),
         "/:version/:binary/:function": async req => {
             if (req.params.function.endsWith(".json")) {
-                let file = Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.version}/${req.params.binary}/data/${req.params.function}`);
+                let file = Bun.file(`${outputDir}/${req.params.version}/${req.params.binary}/data/${req.params.function}`);
                 if (!await file.exists()) return new Response(Bun.file("./public/404.html"), { status: 404 });
                 return new Response(file);
             } else {
@@ -65,25 +67,27 @@ let server = Bun.serve({
 
         "/:version/:binary/data.json": async req => {
             let versions = [];
-            for (let folder of await fs.readdir(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}`)) {
-                if (await Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${folder}`).exists()) continue; // this is a file not a directory
+            for (let folder of await fs.readdir(`${outputDir}`)) {
+                if (await Bun.file(`${outputDir}/${folder}`).exists()) continue; // this is a file not a directory
                 versions.push(folder);
             }
 
             versions.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
             let binaries = [];
-            for (let folder of await fs.readdir(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.version}`)) {
-                if (await Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${folder}`).exists()) continue; // this is a file not a directory
+            for (let folder of await fs.readdir(`${outputDir}/${req.params.version}`)) {
+                if (await Bun.file(`${outputDir}/${folder}`).exists()) continue; // this is a file not a directory
                 binaries.push(folder);
             }
 
             binaries.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
             let functions = [];
-            for (let file of await fs.readdir(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.version}/${req.params.binary}/data`)) {
-                if (!file.endsWith(".json")) continue;
-                functions.push(file.replace(".json", ""));
+            if (await fs.exists(`${outputDir}/${req.params.version}/${req.params.binary}/data`)) {
+                for (let file of await fs.readdir(`${outputDir}/${req.params.version}/${req.params.binary}/data`)) {
+                    if (!file.endsWith(".json")) continue;
+                    functions.push(file.replace(".json", ""));
+                }
             }
 
             functions.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
