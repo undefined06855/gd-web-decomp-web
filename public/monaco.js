@@ -1,14 +1,23 @@
-require.config({ paths: { vs: "/node_module/monaco/min/vs" } });
-await (() => { return new Promise((resolve, reject) => require(["vs/editor/editor.main"], resolve, reject)); })();
-
 // TODO: ctrl+click support?
 // TODO: better assembly highlighting
 // TODO: better class highlighting?
+
+require.config({ paths: { vs: "/node_module/monaco/min/vs" } });
+await (() => { return new Promise((resolve, reject) => require(["vs/editor/editor.main"], resolve, reject)); })();
 
 class MonacoEditor {
     constructor(editorID) {
         this.id = editorID;
         this.isSettingValue = false;
+        this.createdEditor = false;
+        this.editor = null;
+    }
+
+    /**
+     * defer creating editor until we actually need one to improve load times on /
+     */
+    createEditorIfNeeded() {
+        if (this.createdEditor) return;
 
         // https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.editor.IStandaloneEditorConstructionOptions.html
         const params = {
@@ -16,8 +25,8 @@ class MonacoEditor {
             automaticLayout: true,
             readOnly: true,
             // domReadOnly: true,
-            minimap: { enabled: editorID == "pseudocode" },
-            language: editorID == "pseudocode" ? "cpp" : "asm",
+            minimap: { enabled: this.id == "pseudocode" },
+            language: this.id == "pseudocode" ? "cpp" : "asm",
             tabSize: 2, // ...sadly
             value: "Loading..."
         };
@@ -26,20 +35,20 @@ class MonacoEditor {
             params["fontSize"] = 10;
         }
 
-        this.editor = monaco.editor.create(document.getElementById(editorID), params);
+        this.editor = monaco.editor.create(document.getElementById(this.id), params);
 
         this.editor.onDidChangeCursorSelection(event => {
             if (this.isSettingValue) return;
 
             // https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.ISelection.html
             let selection = event.selection;
-            let hashString = `${editorID}=${selection.selectionStartLineNumber},${selection.selectionStartColumn},${selection.positionLineNumber},${selection.positionColumn}`;
+            let hashString = `${this.id}=${selection.selectionStartLineNumber},${selection.selectionStartColumn},${selection.positionLineNumber},${selection.positionColumn}`;
 
             let hashes = window.location.hash.slice(1).split("$");
             let replacedExisting = false;
             for (let [i, hash] of Object.entries(hashes)) {
                 let [ id, _ ] = hash.split("=");
-                if (id == editorID) {
+                if (id == this.id) {
                     replacedExisting = true;
                     hashes[i] = hashString;
                     break;
@@ -53,6 +62,8 @@ class MonacoEditor {
             console.log(`setting hash from ${this.id}`);
             history.replaceState(undefined, undefined, `#${hashes.join("$")}`)
         });
+
+        this.createdEditor = true;
     }
 
     update(text) {
@@ -75,6 +86,8 @@ class MonacoEditor {
                 }
             }
         }
+
+        this.createEditorIfNeeded();
 
         // isSettingValue is used to prevent onDidChangeCursorSelection from firing
         this.isSettingValue = true;
