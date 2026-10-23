@@ -1,5 +1,5 @@
 import { updateAll } from "./state.js";
-import { FuseWorker } from "/node_module/fuse/dist/fuse-worker.mjs"
+import { FuseWorker } from "/node_module/fuse/dist/fuse-worker.mjs";
 
 let versionInput = document.querySelector("select#version-input");
 let binaryInput = document.querySelector("select#binary-input");
@@ -31,13 +31,17 @@ export function setupVersionInput() {
     if (versionEventController) versionEventController.abort();
     versionEventController = new AbortController();
 
-    versionInput.addEventListener("input", async event => {
-        window.presetData.version = versionInput.value;
-        await fetchInputData();
-        setupBinaryInput();
-        setupFunctionInput();
-        updateAll();
-    }, { signal: versionEventController.signal });
+    versionInput.addEventListener(
+        "input",
+        async event => {
+            window.presetData.version = versionInput.value;
+            await fetchInputData();
+            setupBinaryInput();
+            setupFunctionInput();
+            updateAll();
+        },
+        { signal: versionEventController.signal },
+    );
 }
 
 let binaryEventController = null;
@@ -55,12 +59,16 @@ export function setupBinaryInput() {
     if (binaryEventController) binaryEventController.abort();
     binaryEventController = new AbortController();
 
-    binaryInput.addEventListener("input", async event => {
-        window.presetData.binary = binaryInput.value;
-        await fetchInputData();
-        setupFunctionInput();
-        updateAll();
-    }, { signal: binaryEventController.signal });
+    binaryInput.addEventListener(
+        "input",
+        async event => {
+            window.presetData.binary = binaryInput.value;
+            await fetchInputData();
+            setupFunctionInput();
+            updateAll();
+        },
+        { signal: binaryEventController.signal },
+    );
 }
 
 let functionEventController = null;
@@ -96,29 +104,45 @@ export function setupFunctionInput() {
     if (functionEventController) functionEventController.abort();
     functionEventController = new AbortController();
 
-    functionInput.addEventListener("input", event => {
-        search(); // is it okay to rerun fuse search on every single key lol
-    }, { signal: functionEventController.signal });
+    functionInput.addEventListener(
+        "input",
+        event => {
+            search(); // is it okay to rerun fuse search on every single key lol
+        },
+        { signal: functionEventController.signal },
+    );
 
-    functionInput.addEventListener("keydown", event => {
-        if (event.code == "Enter") {
-            overlay.children[0].click();
-        }
-    }, { signal: functionEventController.signal })
+    functionInput.addEventListener(
+        "keydown",
+        event => {
+            if (event.code == "Enter") {
+                overlay.children[0].click();
+            }
+        },
+        { signal: functionEventController.signal },
+    );
 
-    window.addEventListener("keydown", event => {
-        if (event.code == "KeyF" && event.ctrlKey) {
-            event.preventDefault();
-            functionInput.focus();
-        }
-    }, { signal: functionEventController.signal });
+    window.addEventListener(
+        "keydown",
+        event => {
+            if (event.code == "KeyF" && event.ctrlKey) {
+                event.preventDefault();
+                functionInput.focus();
+            }
+        },
+        { signal: functionEventController.signal },
+    );
 
     // input.addEventListener("blur", unsearch);
-    functionInput.addEventListener("click", event => {
-        if (event.target !== functionInput && event.target !== overlay) {
-            unsearch();
-        }
-    }, { signal: functionEventController.signal });
+    functionInput.addEventListener(
+        "click",
+        event => {
+            if (event.target !== functionInput && event.target !== overlay) {
+                unsearch();
+            }
+        },
+        { signal: functionEventController.signal },
+    );
 
     function updateOverlayPosition() {
         let rect = functionInput.getBoundingClientRect();

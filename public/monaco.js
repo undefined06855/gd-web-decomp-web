@@ -3,7 +3,9 @@
 // TODO: better class highlighting?
 
 require.config({ paths: { vs: "/node_module/monaco/min/vs" } });
-await (() => { return new Promise((resolve, reject) => require(["vs/editor/editor.main"], resolve, reject)); })();
+await (() => {
+    return new Promise((resolve, reject) => require(["vs/editor/editor.main"], resolve, reject));
+})();
 
 class MonacoEditor {
     constructor(editorID) {
@@ -28,7 +30,7 @@ class MonacoEditor {
             minimap: { enabled: this.id == "pseudocode" },
             language: this.id == "pseudocode" ? "cpp" : "asm",
             tabSize: 2, // ...sadly
-            value: "Loading..."
+            value: "Loading...",
         };
 
         if (window.innerWidth < 700) {
@@ -47,7 +49,7 @@ class MonacoEditor {
             let hashes = window.location.hash.slice(1).split("$");
             let replacedExisting = false;
             for (let [i, hash] of Object.entries(hashes)) {
-                let [ id, _ ] = hash.split("=");
+                let [id, _] = hash.split("=");
                 if (id == this.id) {
                     replacedExisting = true;
                     hashes[i] = hashString;
@@ -60,7 +62,7 @@ class MonacoEditor {
             }
 
             console.log(`setting hash from ${this.id}`);
-            history.replaceState(undefined, undefined, `#${hashes.join("$")}`)
+            history.replaceState(undefined, undefined, `#${hashes.join("$")}`);
         });
 
         this.createdEditor = true;
@@ -117,7 +119,7 @@ class MonacoEditor {
 
         let hashes = window.location.hash.slice(1).split("$");
         for (let hash of hashes) {
-            let [ editorID, location ] = hash.split("=");
+            let [editorID, location] = hash.split("=");
             if (editorID != this.id) continue;
 
             // https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.editor.IStandaloneCodeEditor.html#setSelection
@@ -126,7 +128,7 @@ class MonacoEditor {
                 selectionStartLineNumber: Number(split[0]),
                 selectionStartColumn: Number(split[1]),
                 positionLineNumber: Number(split[2]),
-                positionColumn: Number(split[3])
+                positionColumn: Number(split[3]),
             });
             this.editor.revealLineInCenter(Number(split[0]));
 
@@ -139,7 +141,9 @@ class MonacoEditor {
  * called from state.js
  */
 export async function loadFromServerData() {
-    let res = await fetch(`/${window.presetData.version}/${window.presetData.binary}/${window.presetData.function}.json`);
+    let res = await fetch(
+        `/${window.presetData.version}/${window.presetData.binary}/${window.presetData.function}.json`,
+    );
     if (res.status == 404) {
         document.querySelector("#http-cat-image").style.display = "";
         document.querySelector("#code-editors").style.display = "none";

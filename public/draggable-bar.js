@@ -1,4 +1,4 @@
-let bar = document.querySelector("#resize-bar")
+let bar = document.querySelector("#resize-bar");
 let dragging = false;
 
 bar.addEventListener("pointerdown", event => {

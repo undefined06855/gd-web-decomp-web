@@ -1,4 +1,4 @@
-import * as fs from "fs/promises"
+import * as fs from "fs/promises";
 
 const outputDir = process.env["GD_WEB_DECOMP_OUTPUT_DIR"];
 
@@ -9,11 +9,11 @@ let server = Bun.serve({
             let path = url.pathname.replace("/node_module/", "");
 
             let modules = {
-                "monaco": "monaco-editor",
-                "fuse": "fuse.js"
+                monaco: "monaco-editor",
+                fuse: "fuse.js",
             };
 
-            for (let [ fakePath, realPath ] of Object.entries(modules)) {
+            for (let [fakePath, realPath] of Object.entries(modules)) {
                 if (path.startsWith(`${fakePath}/`)) {
                     let file = Bun.file(`./node_modules/${path.replace(`${fakePath}/`, `${realPath}/`)}`);
                     if (await file.exists()) {
@@ -27,15 +27,17 @@ let server = Bun.serve({
 
         "/:file": async req => {
             let file = Bun.file(`./public/${req.params.file}`);
-            if (!await file.exists()) return new Response(Bun.file("./public/404.html"), { status: 404 });
+            if (!(await file.exists())) return new Response(Bun.file("./public/404.html"), { status: 404 });
             return new Response(file, { headers: { "Content-Type": file.type } });
         },
 
         "/": Bun.file("public/index.html"),
         "/:version/:binary/:function": async req => {
             if (req.params.function.endsWith(".json")) {
-                let file = Bun.file(`${outputDir}/${req.params.version}/${req.params.binary}/data/${req.params.function}`);
-                if (!await file.exists()) return new Response(Bun.file("./public/404.html"), { status: 404 });
+                let file = Bun.file(
+                    `${outputDir}/${req.params.version}/${req.params.binary}/data/${req.params.function}`,
+                );
+                if (!(await file.exists())) return new Response(Bun.file("./public/404.html"), { status: 404 });
                 return new Response(file);
             } else {
                 let html = await Bun.file("./public/index.html").text();
@@ -53,14 +55,15 @@ let server = Bun.serve({
                                                 function: ${JSON.stringify(req.params.function)}
                                             };
                                         </script>
-                                    `.trim(), { html: true }
+                                    `.trim(),
+                                    { html: true },
                                 );
-                            }
+                            },
                         })
                         .transform(html),
                     {
-                        headers: { "Content-Type": "text/html" }
-                    }
+                        headers: { "Content-Type": "text/html" },
+                    },
                 );
             }
         },
@@ -92,9 +95,11 @@ let server = Bun.serve({
 
             functions.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
-            return new Response(JSON.stringify({ versions, binaries, functions }), { headers: { "Content-Type": "application/json" } });
-        }
-    }
+            return new Response(JSON.stringify({ versions, binaries, functions }), {
+                headers: { "Content-Type": "application/json" },
+            });
+        },
+    },
 });
 
 console.log(`Running server on port ${server.port}`);
