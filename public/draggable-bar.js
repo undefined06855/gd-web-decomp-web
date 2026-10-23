@@ -10,7 +10,7 @@ bar.addEventListener("pointermove", event => {
     if (!dragging) return;
 
     let rect = document.querySelector("#code-editors").getBoundingClientRect();
-    document.querySelector("#assembly").style.width = `${event.clientX - rect.left}px`;
+    document.querySelector("#assembly").style.width = `${event.clientX - rect.left - 10}px`;
 });
 
 bar.addEventListener("pointerup", event => {

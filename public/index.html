@@ -4,9 +4,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>GD Web Decomp | {{FUNCTION}} from {{BINARY}}</title>
+        <title>GD Web Decomp</title>
 
-        <link rel="stylesheet" href="/{{BINARY}}/{{FUNCTION}}/style.css" />
+        <link rel="stylesheet" href="/style.css" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,19 +14,23 @@
 
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
-        <meta name="description" content="View the decompiled source of {{FUNCTION}} from {{BINARY}}! (or other functions, I guess)" />
+        <meta name="description" content="View the decompiled Geometry Dash source from the comfort of your home!" />
 
         <meta property="og:url" content="https://gd-src.undefined0.dev/" />
         <meta property="og:type" content="website">
         <meta property="og:title" content="GD Web Decomp">
-        <meta property="og:description" content="View the decompiled source of {{FUNCTION}} from {{BINARY}}! (or other functions, I guess)">
+        <meta property="og:description" content="View the decompiled Geometry Dash source from the comfort of your home!">
         <!-- <meta property="og:image" content="https://gd-src.undefined0.dev/resources/embed.png"> -->
+
+        <script src="/node_module/fuse/dist/fuse.basic.min.mjs" type="module"></script>
+        <script src="/node_module/monaco/min/vs/loader.js"></script>
     </head>
     <body>
         <main>
             <div id="top-bar">
+                <select id="version-input" aria-label="GD Version Input"></select>
                 <select id="binary-input" aria-label="GD Binary Input"></select>
-                <input type="text" id="function-input" autocomplete="off" aria-label="GD Function Input"></input>
+                <input type="text" id="function-input" autocomplete="off" aria-label="GD Function Input" placeholder="[ Awaiting Input ]"></input>
 
                 <div class="right">
                     <h1>GD Web Decomp</h1>
@@ -37,10 +41,16 @@
                     </div>
                 </div>
             </div>
-            <div id="code-editors">
+
+            <div id="code-editors" style="display: none">
                 <div id="assembly" class="pane"></div>
                 <div id="resize-bar"></div>
                 <div id="pseudocode" class="pane"></div>
+            </div>
+
+            <div id="homepage" style="display: none">
+                <img src="search-for-function.png" alt="Search for a function in the top left!" height="60px" />
+                <noscript>You must enable JavaScript to view this page (duh)!</noscript>
             </div>
 
             <img id="http-cat-image" src="https://http.cat/404" style="display: none" />
@@ -48,10 +58,9 @@
 
         <div id="search-overlay" style="display: none"></div>
 
-        <script src="/node_module/fuse/dist/fuse.basic.min.mjs" type="module"></script>
-        <script src="/node_module/monaco/min/vs/loader.js"></script>
-        <script src="/{{BINARY}}/{{FUNCTION}}/load-monaco.js"></script>
-        <script src="/{{BINARY}}/{{FUNCTION}}/load-inputs.js" type="module"></script>
-        <script src="/{{BINARY}}/{{FUNCTION}}/draggable-bar.js"></script>
+        <script src="/draggable-bar.js" type="module"></script>
+        <script src="/state.js" type="module"></script>
+        <script src="/inputs.js" type="module"></script>
+        <script src="/monaco.js" type="module"></script>
     </body>
 </html>
