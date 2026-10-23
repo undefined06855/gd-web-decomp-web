@@ -100,6 +100,9 @@ let server = Bun.serve({
             });
         },
     },
+
+    port: process.env["PORT"],
+    development: process.env["DEVELOPMENT"] == "true"
 });
 
 console.log(`Running server on port ${server.port}`);
