@@ -20,12 +20,12 @@ let server = Bun.serve({
                 }
             }
 
-            return new Response(Bun.file("./public/404.html"));
+            return new Response(Bun.file("./public/404.html"), { status: 404 });
         },
 
         "/:file": async req => {
             let file = Bun.file(`./public/${req.params.file}`);
-            if (!await file.exists()) { return new Response("404 Not Found", { status: 404 }); }
+            if (!await file.exists()) return new Response(Bun.file("./public/404.html"), { status: 404 });
             return new Response(file, { headers: { "Content-Type": file.type } });
         },
 
@@ -33,7 +33,7 @@ let server = Bun.serve({
         "/:version/:binary/:function": async req => {
             if (req.params.function.endsWith(".json")) {
                 let file = Bun.file(`${process.env["GD_WEB_DECOMP_OUTPUT_DIR"]}/${req.params.version}/${req.params.binary}/data/${req.params.function}`);
-                if (!await file.exists()) return new Response("404 Not Found", { status: 404 });
+                if (!await file.exists()) return new Response(Bun.file("./public/404.html"), { status: 404 });
                 return new Response(file);
             } else {
                 let html = await Bun.file("./public/index.html").text();

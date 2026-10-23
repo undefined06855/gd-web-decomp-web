@@ -30,6 +30,8 @@ export async function updateAll(isNavigating = true) {
 
         loadFromServerData();
     }
+
+    document.querySelector("#loading-spinner").style.display = "none";
 }
 
 // TODO: going backwards and forwards a bit buggy still
