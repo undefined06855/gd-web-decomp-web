@@ -98,24 +98,6 @@ class MonacoEditor {
         this.editor.setValue(text);
         this.isSettingValue = false;
 
-        if (this.id == "pseudocode" && localVariablesEnd != -1) {
-            // this is an internal api or something? not sure but i cant find documentation for it anywhere
-            // anyway this works i checked the minified source
-            let foldingModel = this.editor.getContribution("editor.contrib.folding").foldingModel;
-            let callback = foldingModel.onDidChange(() => {
-                callback.dispose();
-
-                for (let regionIndex = 0; regionIndex < foldingModel.regions.length; regionIndex++) {
-                    if (foldingModel.regions.toRegion(regionIndex).startLineNumber == lineThatPragmaStartsOn) {
-                        foldingModel.toggleCollapseState([{ regionIndex }]);
-                        return;
-                    }
-                }
-
-                console.warn(`failed to find region index to toggle out of ${foldingModel.regions.length} regions!`);
-            });
-        }
-
         let hashes = window.location.hash.slice(1).split("$");
         for (let hash of hashes) {
             let [editorID, location] = hash.split("=");
@@ -132,6 +114,24 @@ class MonacoEditor {
             this.editor.revealLineInCenter(Number(split[0]));
 
             break;
+        }
+
+        if (this.id == "pseudocode" && localVariablesEnd != -1) {
+            // this is an internal api or something? not sure but i cant find documentation for it anywhere
+            // anyway this works i checked the minified source
+            let foldingModel = this.editor.getContribution("editor.contrib.folding").foldingModel;
+            let callback = foldingModel.onDidChange(() => {
+                callback.dispose();
+
+                for (let regionIndex = 0; regionIndex < foldingModel.regions.length; regionIndex++) {
+                    if (foldingModel.regions.toRegion(regionIndex).startLineNumber == lineThatPragmaStartsOn) {
+                        foldingModel.toggleCollapseState([{ regionIndex }]);
+                        return;
+                    }
+                }
+
+                console.warn(`failed to find region index to toggle out of ${foldingModel.regions.length} regions!`);
+            });
         }
     }
 }
