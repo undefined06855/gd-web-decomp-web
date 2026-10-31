@@ -108,11 +108,10 @@ class MonacoEditor {
                 for (let regionIndex = 0; regionIndex < foldingModel.regions.length; regionIndex++) {
                     if (foldingModel.regions.toRegion(regionIndex).startLineNumber == lineThatPragmaStartsOn) {
                         foldingModel.toggleCollapseState([{ regionIndex }]);
-                        break;
+                        return;
                     }
                 }
 
-                // TODO: this sometimes fails for no reason?
                 console.warn(`failed to find region index to toggle out of ${foldingModel.regions.length} regions!`);
             });
         }
