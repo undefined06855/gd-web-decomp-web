@@ -78,10 +78,10 @@ let server = Bun.serve({
             versions.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 
             let binaries = [];
-            for (let folder of await fs.readdir(`${outputDir}/${req.params.version}`)) {
-                if (await Bun.file(`${outputDir}/${folder}`).exists()) continue; // this is a file not a directory
-                if (!(await Bun.file(`${outputDir}/${folder}/data`).exists())) continue; // no data subdirectory
-                binaries.push(folder);
+            for (let binary of await fs.readdir(`${outputDir}/${req.params.version}`)) {
+                if (await Bun.file(`${outputDir}/${req.params.version}/${binary}`).exists()) continue; // this is a file not a directory
+                if (!(await fs.exists(`${outputDir}/${req.params.version}/${binary}/data`))) continue; // no data subdirectory
+                binaries.push(binary);
             }
 
             binaries.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
