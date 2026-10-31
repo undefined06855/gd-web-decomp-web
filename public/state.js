@@ -2,7 +2,7 @@ import { fetchInputData, setupBinaryInput, setupFunctionInput, setupVersionInput
 import { loadFromServerData } from "./monaco.js";
 
 const defaultState = {
-    version: "2.2091",
+    version: "2.2081",
     binary: "libcocos2dcpp-32.so",
     function: null,
 };
