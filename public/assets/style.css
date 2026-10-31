@@ -1,10 +1,20 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
     user-select: none;
 
     font-family: "Noto Sans", sans-serif;
+}
+
+@keyframes rotate {
+    from {
+        rotate: 0turn;
+    }
+    to {
+        rotate: 1turn;
+    }
 }
 
 main {
@@ -38,14 +48,15 @@ main {
             flex-direction: column;
             align-items: center;
 
+            color: white;
+            text-align: center;
+
             > h1 {
-                color: white;
                 margin: 0px;
                 font-size: 20px;
             }
 
             > div {
-                color: white;
                 font-size: 10px;
 
                 > a {
@@ -54,7 +65,8 @@ main {
             }
         }
 
-        > select, > input {
+        > select,
+        > input {
             padding: 3px;
             max-width: 30%;
         }
@@ -74,8 +86,12 @@ main {
         flex-direction: row;
         flex-wrap: nowrap;
 
-        > #assembly { width: 800px; }
-        > #pseudocode { flex: 1 1 auto; }
+        > #assembly {
+            width: 800px;
+        }
+        > #pseudocode {
+            flex: 1 1 auto;
+        }
 
         > div.pane {
             height: 100%;
@@ -91,16 +107,28 @@ main {
         }
     }
 
-    > #http-cat-image {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        translate: -50% -50%;
+    > #center {
+        flex: 1 1 auto;
 
-        width: 700px;
-        max-width: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-        border-radius: 10px;
+        > #loading-spinner {
+            animation: 1s linear 0s infinite normal both running rotate;
+        }
+
+        > #http-cat-image {
+            width: 700px;
+            max-width: 80%;
+
+            border-radius: 10px;
+        }
+
+        > #homepage {
+            width: 610px;
+            max-width: 80%;
+        }
     }
 }
 

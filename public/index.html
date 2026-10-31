@@ -1,34 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>GD Web Decomp | {{FUNCTION}} from {{BINARY}}</title>
+        <title>GD Web Decomp</title>
 
-        <link rel="stylesheet" href="/{{BINARY}}/{{FUNCTION}}/style.css" />
+        <link rel="stylesheet" href="/style.css" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+        />
 
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.png" type="image/png" />
+        <link rel="preload" href="/search-for-function.png" as="image" />
+        <link rel="preload" href="/loading.png" as="image" />
+        <link rel="preload" href="https://http.cat/404" as="image" />
 
-        <meta name="description" content="View the decompiled source of {{FUNCTION}} from {{BINARY}}! (or other functions, I guess)" />
+        <meta name="description" content="View the decompiled Geometry Dash source from the comfort of your home!" />
 
         <meta property="og:url" content="https://gd-src.undefined0.dev/" />
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="GD Web Decomp">
-        <meta property="og:description" content="View the decompiled source of {{FUNCTION}} from {{BINARY}}! (or other functions, I guess)">
-        <!-- <meta property="og:image" content="https://gd-src.undefined0.dev/resources/embed.png"> -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="GD Web Decomp" />
+        <meta
+            property="og:description"
+            content="View the decompiled Geometry Dash source from the comfort of your home!"
+        />
+
+        <script src="/node_module/fuse/dist/fuse.basic.min.mjs" type="module"></script>
+        <script src="/node_module/monaco/min/vs/loader.js"></script>
+        <script src="/draggable-bar.js" type="module"></script>
+        <script src="/state.js" type="module"></script>
+        <script src="/inputs.js" type="module"></script>
+        <script src="/monaco.js" type="module"></script>
     </head>
     <body>
         <main>
             <div id="top-bar">
+                <select id="version-input" aria-label="GD Version Input"></select>
                 <select id="binary-input" aria-label="GD Binary Input"></select>
-                <input type="text" id="function-input" autocomplete="off" aria-label="GD Function Input"></input>
+                <input
+                    type="text"
+                    id="function-input"
+                    autocomplete="off"
+                    aria-label="GD Function Input"
+                    placeholder="[ Awaiting Input ] (Ctrl+F)"
+                />
 
+                <!-- TODO: random function button lol -->
                 <div class="right">
+                    <noscript>You must enable JavaScript to view this page!</noscript>
+
                     <h1>GD Web Decomp</h1>
                     <div class="">
                         <a href="https://gd-src-raw.undefined0.dev/">Raw GD Source</a>
@@ -37,21 +62,25 @@
                     </div>
                 </div>
             </div>
-            <div id="code-editors">
+
+            <div id="center">
+                <img
+                    src="/search-for-function.png"
+                    alt="Search for a function in the top left!"
+                    id="homepage"
+                    style="display: none"
+                />
+                <img id="http-cat-image" src="https://http.cat/404" style="display: none" />
+                <img id="loading-spinner" src="/loading.png" />
+            </div>
+
+            <div id="code-editors" style="display: none">
                 <div id="assembly" class="pane"></div>
                 <div id="resize-bar"></div>
                 <div id="pseudocode" class="pane"></div>
             </div>
-
-            <img id="http-cat-image" src="https://http.cat/404" style="display: none" />
         </main>
 
         <div id="search-overlay" style="display: none"></div>
-
-        <script src="/node_module/fuse/dist/fuse.basic.min.mjs" type="module"></script>
-        <script src="/node_module/monaco/min/vs/loader.js"></script>
-        <script src="/{{BINARY}}/{{FUNCTION}}/load-monaco.js"></script>
-        <script src="/{{BINARY}}/{{FUNCTION}}/load-inputs.js" type="module"></script>
-        <script src="/{{BINARY}}/{{FUNCTION}}/draggable-bar.js"></script>
     </body>
 </html>
