@@ -22,12 +22,12 @@ let server = Bun.serve({
                 }
             }
 
-            return new Response(Bun.file("./public/404.html"), { status: 404 });
+            return new Response(Bun.file("public/404.html"), { status: 404 });
         },
 
         "/:file": async req => {
-            let file = Bun.file(`./public/${req.params.file}`);
-            if (!(await file.exists())) return new Response(Bun.file("./public/404.html"), { status: 404 });
+            let file = Bun.file(`public/assets/${req.params.file}`);
+            if (!(await file.exists())) return new Response(Bun.file("public/404.html"), { status: 404 });
             return new Response(file, { headers: { "Content-Type": file.type } });
         },
 
@@ -37,10 +37,10 @@ let server = Bun.serve({
                 let file = Bun.file(
                     `${outputDir}/${req.params.version}/${req.params.binary}/data/${req.params.function}`,
                 );
-                if (!(await file.exists())) return new Response(Bun.file("./public/404.html"), { status: 404 });
+                if (!(await file.exists())) return new Response(Bun.file("public/404.html"), { status: 404 });
                 return new Response(file);
             } else {
-                let html = await Bun.file("./public/index.html").text();
+                let html = await Bun.file("public/index.html").text();
 
                 return new Response(
                     new HTMLRewriter()
@@ -100,6 +100,8 @@ let server = Bun.serve({
                 headers: { "Content-Type": "application/json" },
             });
         },
+
+        "/*": req => new Response(Bun.file("public/404.html"), { status: 404 })
     },
 
     port: process.env["PORT"],

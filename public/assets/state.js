@@ -1,5 +1,5 @@
-import { fetchInputData, setupBinaryInput, setupFunctionInput, setupVersionInput, updateInputs } from "./inputs.js";
-import { loadFromServerData } from "./monaco.js";
+import { fetchInputData, setupBinaryInput, setupFunctionInput, setupVersionInput, updateInputs } from "./assets/inputs.js";
+import { loadFromServerData } from "./assets/monaco.js";
 
 const defaultState = {
     version: "2.2081",
