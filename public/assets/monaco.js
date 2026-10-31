@@ -3,9 +3,7 @@
 // TODO: better class highlighting?
 
 require.config({ paths: { vs: "/node_module/monaco/min/vs" } });
-await (() => {
-    return new Promise((resolve, reject) => require(["vs/editor/editor.main"], resolve, reject));
-})();
+let monacoLoadPromise = new Promise((resolve, reject) => require(["vs/editor/editor.main"], resolve, reject));
 
 class MonacoEditor {
     constructor(editorID) {
@@ -18,7 +16,7 @@ class MonacoEditor {
     /**
      * defer creating editor until we actually need one to improve load times on /
      */
-    createEditorIfNeeded() {
+    async createEditorIfNeeded() {
         if (this.createdEditor) return;
 
         // https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor_editor_api.editor.IStandaloneEditorConstructionOptions.html
@@ -37,6 +35,7 @@ class MonacoEditor {
             params["fontSize"] = 10;
         }
 
+        await monacoLoadPromise;
         this.editor = monaco.editor.create(document.getElementById(this.id), params);
 
         this.editor.onDidChangeCursorSelection(event => {
@@ -68,7 +67,7 @@ class MonacoEditor {
         this.createdEditor = true;
     }
 
-    update(text) {
+    async update(text) {
         let localVariablesStart = text.indexOf("\n{") + 2;
         let localVariablesEnd = text.indexOf("\n\n", localVariablesStart);
 
@@ -91,7 +90,7 @@ class MonacoEditor {
             }
         }
 
-        this.createEditorIfNeeded();
+        await this.createEditorIfNeeded();
 
         // isSettingValue is used to prevent onDidChangeCursorSelection from firing
         this.isSettingValue = true;
