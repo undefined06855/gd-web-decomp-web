@@ -49,6 +49,7 @@ main {
             align-items: center;
 
             color: white;
+            text-align: center;
 
             > h1 {
                 margin: 0px;
@@ -122,6 +123,11 @@ main {
             max-width: 80%;
 
             border-radius: 10px;
+        }
+
+        > #homepage {
+            width: 610px;
+            max-width: 80%;
         }
     }
 }
