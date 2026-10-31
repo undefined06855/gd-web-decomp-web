@@ -80,6 +80,7 @@ let server = Bun.serve({
             let binaries = [];
             for (let folder of await fs.readdir(`${outputDir}/${req.params.version}`)) {
                 if (await Bun.file(`${outputDir}/${folder}`).exists()) continue; // this is a file not a directory
+                if (!(await Bun.file(`${outputDir}/${folder}/data`).exists())) continue; // no data subdirectory
                 binaries.push(folder);
             }
 
