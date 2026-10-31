@@ -101,11 +101,11 @@ let server = Bun.serve({
             });
         },
 
-        "/*": req => new Response(Bun.file("public/404.html"), { status: 404 })
+        "/*": req => new Response(Bun.file("public/404.html"), { status: 404 }),
     },
 
     port: process.env["PORT"],
-    development: process.env["DEVELOPMENT"] == "true"
+    development: process.env["DEVELOPMENT"] == "true",
 });
 
 console.log(`Running server on port ${server.port}`);

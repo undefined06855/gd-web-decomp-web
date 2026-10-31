@@ -4,6 +4,7 @@ A web UI for https://github.com/undefined06855/gd-web-decomp! Slightly buggy, bu
 every single page and can be heavily cached.
 
 ## Setup
+
 1. Clone this repository
 1. Setup and run [gd-web-decomp](https://github.com/undefined06855/gd-web-decomp) anywhere
 1. Create a `.env` file with the following content:
