@@ -134,7 +134,7 @@ export function setupFunctionInput() {
     );
 
     // input.addEventListener("blur", unsearch);
-    functionInput.addEventListener(
+    window.addEventListener(
         "click",
         event => {
             if (event.target !== functionInput && event.target !== overlay) {
@@ -146,7 +146,7 @@ export function setupFunctionInput() {
 
     function updateOverlayPosition() {
         let rect = functionInput.getBoundingClientRect();
-        overlay.style.top = `${rect.bottom}px`;
+        overlay.style.top = `${rect.bottom + 5}px`;
         overlay.style.left = `${rect.left}px`;
     }
 
