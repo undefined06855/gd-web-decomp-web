@@ -16,6 +16,9 @@
         />
 
         <link rel="shortcut icon" href="/favicon.png" type="image/png" />
+        <link rel="preload" href="/favicon.png" as="image" />
+        <link rel="preload" href="/github.png" as="image" />
+        <link rel="preload" href="/source.png" as="image" />
         <link rel="preload" href="/search-for-function.png" as="image" />
         <link rel="preload" href="/loading.png" as="image" />
         <link rel="preload" href="https://http.cat/404" as="image" />
@@ -23,6 +26,7 @@
         <meta name="description" content="View the decompiled Geometry Dash source from the comfort of your home!" />
 
         <meta property="og:url" content="https://gd-src.undefined0.dev/" />
+        <meta property="og:image" content="https://gd-src.undefined0.dev/favicon.png" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="GD Web Decomp" />
         <meta
@@ -40,6 +44,7 @@
     <body>
         <main>
             <div id="top-bar">
+                <img src="/favicon.png">
                 <select id="version-input" aria-label="GD Version Input"></select>
                 <select id="binary-input" aria-label="GD Binary Input"></select>
                 <input
@@ -53,13 +58,13 @@
                 <!-- TODO: random function button lol -->
                 <div class="right">
                     <noscript>You must enable JavaScript to view this page!</noscript>
-
-                    <h1>GD Web Decomp</h1>
-                    <div class="">
-                        <a href="https://gd-src-raw.undefined0.dev/">Raw GD Source</a>
-                        &bull;
-                        <a href="https://github.com/undefined06855/gd-web-decomp">GitHub</a>
-                    </div>
+                    <h2>GD Web Decomp</h2>
+                    <a href="https://gd-src-raw.undefined0.dev/">
+                        <img src="/source.png" alt="Raw Source">
+                    </a>
+                    <a href="https://github.com/undefined06855/gd-web-decomp">
+                        <img src="/github.png" alt="Github">
+                    </a>
                 </div>
             </div>
 
