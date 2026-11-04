@@ -70,6 +70,10 @@ main {
         > #icon {
             height: 100%;
             cursor: pointer;
+
+            @media (max-width: 500px) {
+                display: none;
+            }
         }
 
         > select,
@@ -113,7 +117,11 @@ main {
                 font-size: 24px;
                 margin: 0px;
 
-                @media (max-width: 640px) {
+                @media (max-width: 900px) {
+                    font-size: 16px;
+                }
+
+                @media (max-width: 700px) {
                     display: none;
                 }
             }
