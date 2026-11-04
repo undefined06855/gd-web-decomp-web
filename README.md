@@ -14,6 +14,7 @@ GD_WEB_DECOMP_OUTPUT_DIR="/path/to/gd-web-decomp/output"
 PORT=8080
 DEVELOPMENT=true
 ```
+
 (or set the environment variables manually)
 
 1. Run `bun i` to install dependencies, then `bun main` to start hosting!

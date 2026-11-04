@@ -1,20 +1,20 @@
 :root {
-    --text-color: white;
+    --text-color: #ffffff;
     --background-color: #272737;
-    --top-bar-background-color: #1A1C24;
-    --input-background-color: #282A33;
+    --top-bar-background-color: #222233;
+    --input-background-color: #282a33;
     --lighter-background-color: #434859;
     --input-border: 2px solid var(--lighter-background-color);
     --hover: brightness(130%);
     --focus: brightness(160%);
     --border-radius: 10px;
-    --input-width: 300px;
+    --function-input-width: 300px;
 }
 
 html,
 body {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
 
     height: 100%;
 
@@ -33,6 +33,10 @@ body {
 
 * {
     box-sizing: border-box;
+}
+
+a > img {
+    height: 100%;
 }
 
 main {
@@ -61,43 +65,38 @@ main {
         gap: 7px;
 
         background-color: var(--top-bar-background-color);
+        color: var(--text-color);
 
-        * {
-            color: var(--text-color);
-        }
-
-        > img {
+        > #icon {
             height: 100%;
+            cursor: pointer;
         }
 
         > select,
         > input {
-            cursor: pointer;
-
             height: 100%;
             max-width: 30%;
 
-            padding: 0 10px;
+            padding: 0px 10px;
 
             background-color: var(--input-background-color);
+            color: var(--text-color);
 
             border: var(--input-border);
             border-radius: var(--border-radius);
+
+            &:hover {
+                filter: var(--hover);
+            }
+
+            &:focus {
+                outline: none;
+                filter: var(--focus);
+            }
         }
 
-        > input:last-of-type {
-            width: var(--input-width);
-        }
-
-        > select:hover,
-        > input:hover {
-            filter: var(--hover);
-        }
-
-        > select:focus,
-        > input:focus {
-            outline: none;
-            filter: var(--focus);
+        > #function-input {
+            width: var(--function-input-width);
         }
 
         > .right {
@@ -107,29 +106,28 @@ main {
 
             display: flex;
             flex-direction: row;
+            align-items: center;
             gap: 10px;
 
-            > h2 {
-                margin: 0;
+            > h1 {
+                font-size: 24px;
+                margin: 0px;
 
-                line-height: 150%;
+                @media (max-width: 640px) {
+                    display: none;
+                }
             }
 
             > a {
-                height: calc(100% - 8px * 2);
-
-                margin: 8px 0;
-
-                > img {
-                    height: 100%;
-                }
+                height: 60%;
+                translate: 0px 2px;
             }
         }
     }
 
     > #code-editors {
         padding-top: 0px;
-        padding: 5px;
+        padding: 10px;
 
         display: flex;
         flex: 1 1 auto;
@@ -146,8 +144,8 @@ main {
 
         > div.pane {
             height: 100%;
-            min-width: 0;
-            min-height: 0;
+            min-width: 0px;
+            min-height: 0px;
         }
 
         > #resize-bar {
@@ -175,8 +173,36 @@ main {
         }
 
         > #homepage {
-            width: 610px;
-            max-width: 80%;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+
+            > .homepage-center {
+                flex: 1 1 auto;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                > #homepage-label {
+                    width: 610px;
+                    max-width: 80%;
+                }
+            }
+
+            > .homepage-footer {
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+
+                justify-content: center;
+                align-items: center;
+
+                > * {
+                    height: 50%;
+                }
+            }
         }
     }
 }
@@ -187,7 +213,7 @@ main {
     display: flex;
     flex-direction: column;
 
-    min-width: var(--input-width);
+    min-width: var(--function-input-width);
     height: 700px;
     max-height: 80%;
     overflow-y: scroll;

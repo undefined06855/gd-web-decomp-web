@@ -8,7 +8,6 @@ const defaultState = {
 };
 
 // https://stackoverflow.com/a/3354511
-
 export async function updateAll(isNavigating = true) {
     updateInputs();
 
@@ -18,21 +17,25 @@ export async function updateAll(isNavigating = true) {
     if (window.presetData.function == null) {
         document.querySelector("#code-editors").style.display = "none";
         document.querySelector("#homepage").style.display = "";
+        document.title = "GD Web Decomp";
     } else {
         document.querySelector("#code-editors").style.display = "";
         document.querySelector("#homepage").style.display = "none";
-
         document.title = `GD Web Decomp | ${window.presetData.function} from ${window.presetData.binary} @ ${window.presetData.version}`;
-        if (isNavigating) {
-            window.location.hash = "";
+
+        loadFromServerData();
+    }
+
+    if (isNavigating) {
+        if (window.presetData.function == null) {
+            window.history.pushState({ presetData: window.presetData }, "", "/");
+        } else {
             window.history.pushState(
                 { presetData: window.presetData },
                 "",
                 `/${window.presetData.version}/${window.presetData.binary}/${window.presetData.function}`,
             );
         }
-
-        loadFromServerData();
     }
 
     document.querySelector("#loading-spinner").style.display = "none";
@@ -69,6 +72,12 @@ setupBinaryInput();
 setupVersionInput();
 setupFunctionInput();
 await updateAll(false);
+
+document.querySelector("#icon").addEventListener("click", async event => {
+    event.preventDefault();
+    window.presetData.function = null;
+    await updateAll();
+});
 
 Array.from(document.querySelectorAll("img")).forEach(img =>
     img.addEventListener("dragstart", event => {
