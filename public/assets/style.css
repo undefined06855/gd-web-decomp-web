@@ -1,9 +1,10 @@
 :root {
     --text-color: #ffffff;
     --background-color: #272737;
-    --top-bar-background-color: #222233;
+    --top-bar-background-color: #222233; /* if this is being changed ensure to change the html theme-color */
     --input-background-color: #282a33;
     --lighter-background-color: #434859;
+
     --input-border: 2px solid var(--lighter-background-color);
     --hover: brightness(130%);
     --focus: brightness(160%);
