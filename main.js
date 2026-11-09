@@ -109,19 +109,26 @@ let server = Bun.serve({
             let urls = [];
             for (let file of await fs.readdir(`${outputDir}/${req.params.version}/${req.params.binary}/data`)) {
                 if (!file.endsWith(".json")) continue;
-                urls.push(`https://${new URL(req.url).host}/${req.params.version}/${req.params.binary}/${file.replace(".json", "")}`);
+                urls.push(
+                    encodeURI(
+                        `https://${new URL(req.url).host}/${req.params.version}/${req.params.binary}/${file.replace(".json", "")}`,
+                    ),
+                );
             }
 
-            return new Response(Bun.XML.stringify({
-                urlset: {
-                    "@xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
-                    url: urls.map(url => {
-                        return {
-                            loc: url
-                        }
-                    })
-                }
-            }), { headers: { "Content-Type": "application/xml" } });
+            return new Response(
+                Bun.XML.stringify({
+                    urlset: {
+                        "@xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
+                        url: urls.map(url => {
+                            return {
+                                loc: url,
+                            };
+                        }),
+                    },
+                }),
+                { headers: { "Content-Type": "application/xml" } },
+            );
         },
 
         "/sitemap.xml": async req => {
@@ -133,20 +140,23 @@ let server = Bun.serve({
                     if (await Bun.file(`${outputDir}/${version}/${binary}`).exists()) continue; // this is a file not a directory
                     if (!(await fs.exists(`${outputDir}/${version}/${binary}/data`))) continue; // no data subdirectory
 
-                    urls.push(`https://${new URL(req.url).host}/${version}/${binary}/sitemap.xml`);
+                    urls.push(encodeURI(`https://${new URL(req.url).host}/${version}/${binary}/sitemap.xml`));
                 }
             }
 
-            return new Response(Bun.XML.stringify({
-                sitemapindex: {
-                    "@xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
-                    sitemap: urls.map(url => {
-                        return {
-                            loc: url
-                        }
-                    })
-                }
-            }), { headers: { "Content-Type": "application/xml" } });
+            return new Response(
+                Bun.XML.stringify({
+                    sitemapindex: {
+                        "@xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
+                        sitemap: urls.map(url => {
+                            return {
+                                loc: url,
+                            };
+                        }),
+                    },
+                }),
+                { headers: { "Content-Type": "application/xml" } },
+            );
         },
 
         "/*": req => new Response(Bun.file("public/404.html"), { status: 404 }),
