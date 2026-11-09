@@ -15,7 +15,7 @@ let server = Bun.serve({
 
             for (let [fakePath, realPath] of Object.entries(modules)) {
                 if (path.startsWith(`${fakePath}/`)) {
-                    let file = Bun.file(`./node_modules/${path.replace(`${fakePath}/`, `${realPath}/`)}`);
+                    let file = Bun.file(`node_modules/${path.replace(`${fakePath}/`, `${realPath}/`)}`);
                     if (await file.exists()) {
                         return new Response(file, { headers: { "Content-Type": file.type } });
                     }
@@ -39,33 +39,42 @@ let server = Bun.serve({
                 );
                 if (!(await file.exists())) return new Response(Bun.file("public/404.html"), { status: 404 });
                 return new Response(file);
-            } else {
-                let html = await Bun.file("public/index.html").text();
-
-                return new Response(
-                    new HTMLRewriter()
-                        .on("body", {
-                            element: body => {
-                                body.prepend(
-                                    `
-                                        <script>
-                                            window.presetData = {
-                                                version: ${JSON.stringify(req.params.version)},
-                                                binary: ${JSON.stringify(req.params.binary)},
-                                                function: ${JSON.stringify(req.params.function)}
-                                            };
-                                        </script>
-                                    `.trim(),
-                                    { html: true },
-                                );
-                            },
-                        })
-                        .transform(html),
-                    {
-                        headers: { "Content-Type": "text/html" },
-                    },
-                );
             }
+
+            let html = await Bun.file("public/index.html").text();
+            let inlinePseudocode = "";
+            let data = Bun.file(`${outputDir}/${req.params.version}/${req.params.binary}/data/${req.params.function}.json`);
+            if (await data.exists()) {
+                inlinePseudocode = (await data.json()).pseudocode;
+            }
+
+            return new Response(
+                new HTMLRewriter()
+                    .on("body", {
+                        element: body => {
+                            body.prepend(
+                                `
+                                    <script>
+                                        window.presetData = {
+                                            version: ${JSON.stringify(req.params.version)},
+                                            binary: ${JSON.stringify(req.params.binary)},
+                                            function: ${JSON.stringify(req.params.function)}
+                                        };
+                                    </script>
+
+                                    <div id="invis-pseudocode">
+                                        ${inlinePseudocode}
+                                    </div>
+                                `.trim(),
+                                { html: true },
+                            );
+                        },
+                    })
+                    .transform(html),
+                {
+                    headers: { "Content-Type": "text/html" },
+                },
+            );
         },
 
         "/:version/:binary/data.json": async req => {
