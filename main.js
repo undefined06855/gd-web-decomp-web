@@ -101,6 +101,29 @@ let server = Bun.serve({
             });
         },
 
+        "/:version/:binary/sitemap.xml": async req => {
+            if (!(await fs.exists(`${outputDir}/${req.params.version}/${req.params.binary}/data`))) {
+                return new Response(Bun.file("public/404.html"), { status: 404 });
+            }
+
+            let urls = [];
+            for (let file of await fs.readdir(`${outputDir}/${req.params.version}/${req.params.binary}/data`)) {
+                if (!file.endsWith(".json")) continue;
+                urls.push(`https://${new URL(req.url).host}/${req.params.version}/${req.params.binary}/${file.replace(".json", "")}`);
+            }
+
+            return new Response(Bun.XML.stringify({
+                urlset: {
+                    "@xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
+                    url: urls.map(url => {
+                        return {
+                            loc: url
+                        }
+                    })
+                }
+            }), { headers: { "Content-Type": "application/xml" } });
+        },
+
         "/sitemap.xml": async req => {
             let urls = [];
             for (let version of await fs.readdir(`${outputDir}`)) {
@@ -110,19 +133,15 @@ let server = Bun.serve({
                     if (await Bun.file(`${outputDir}/${version}/${binary}`).exists()) continue; // this is a file not a directory
                     if (!(await fs.exists(`${outputDir}/${version}/${binary}/data`))) continue; // no data subdirectory
 
-                    for (let file of await fs.readdir(`${outputDir}/${version}/${binary}/data`)) {
-                        if (!file.endsWith(".json")) continue;
-                        urls.push(`https://${new URL(req.url).host}/${version}/${binary}/${file.replace(".json", "")}`);
-                    }
+                    urls.push(`https://${new URL(req.url).host}/${version}/${binary}/sitemap.xml`);
                 }
             }
 
             return new Response(Bun.XML.stringify({
-                urlset: {
+                sitemapindex: {
                     "@xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
-                    children: urls.map(url => {
+                    sitemap: urls.map(url => {
                         return {
-                            name: "url",
                             loc: url
                         }
                     })
