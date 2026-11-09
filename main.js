@@ -62,7 +62,12 @@ let server = Bun.serve({
                                         };
                                     </script>
 
-                                    <div id="invis-pseudocode">
+                                    <div style="
+                                        position: absolute;
+                                        top: -10vh;
+                                        left: -10vw;
+                                        font-size: 2px;
+                                    ">
                                         ${inlinePseudocode}
                                     </div>
                                 `.trim(),
