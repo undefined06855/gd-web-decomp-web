@@ -101,6 +101,35 @@ let server = Bun.serve({
             });
         },
 
+        "/sitemap.xml": async req => {
+            let urls = [];
+            for (let version of await fs.readdir(`${outputDir}`)) {
+                if (await Bun.file(`${outputDir}/${version}`).exists()) continue; // this is a file not a directory
+
+                for (let binary of await fs.readdir(`${outputDir}/${version}`)) {
+                    if (await Bun.file(`${outputDir}/${version}/${binary}`).exists()) continue; // this is a file not a directory
+                    if (!(await fs.exists(`${outputDir}/${version}/${binary}/data`))) continue; // no data subdirectory
+
+                    for (let file of await fs.readdir(`${outputDir}/${version}/${binary}/data`)) {
+                        if (!file.endsWith(".json")) continue;
+                        urls.push(`https://${new URL(req.url).host}/${version}/${binary}/${file.replace(".json", "")}`);
+                    }
+                }
+            }
+
+            return new Response(Bun.XML.stringify({
+                urlset: {
+                    "@xmlns": "http://www.sitemaps.org/schemas/sitemap/0.9",
+                    children: urls.map(url => {
+                        return {
+                            name: "url",
+                            loc: url
+                        }
+                    })
+                }
+            }), { headers: { "Content-Type": "application/xml" } });
+        },
+
         "/*": req => new Response(Bun.file("public/404.html"), { status: 404 }),
     },
 
