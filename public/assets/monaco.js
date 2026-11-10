@@ -139,9 +139,21 @@ class MonacoEditor {
  * called from state.js
  */
 export async function loadFromServerData() {
+    if (typeof window.firstLoadJsonData != "undefined" && window.firstLoadJsonData != "consumed") {
+        assemblyEditor.update(window.firstLoadJsonData.assembly);
+        pseudocodeEditor.update(window.firstLoadJsonData.pseudocode);
+        window.firstLoadJsonData = "consumed";
+
+        document.querySelector("#http-cat-image").style.display = "none";
+        document.querySelector("#code-editors").style.display = "";
+
+        return;
+    }
+
     let res = await fetch(
         `/${window.presetData.version}/${window.presetData.binary}/${window.presetData.function}.json`,
     );
+
     if (res.status == 404) {
         document.querySelector("#http-cat-image").style.display = "";
         document.querySelector("#code-editors").style.display = "none";

@@ -44,8 +44,10 @@ let server = Bun.serve({
             let html = await Bun.file("public/index.html").text();
             let inlinePseudocode = "";
             let data = Bun.file(`${outputDir}/${req.params.version}/${req.params.binary}/data/${req.params.function}.json`);
+            let jsonData = null;
             if (await data.exists()) {
-                inlinePseudocode = (await data.json()).pseudocode;
+                jsonData = await data.json();
+                inlinePseudocode = jsonData.pseudocode;
             }
 
             return new Response(
@@ -60,6 +62,9 @@ let server = Bun.serve({
                                             binary: ${JSON.stringify(req.params.binary)},
                                             function: ${JSON.stringify(req.params.function)}
                                         };
+
+                                        // improve load times on direct links by not fetching the json file, since we have it here
+                                        window.firstLoadJsonData = ${JSON.stringify(jsonData)};
                                     </script>
 
                                     <div style="

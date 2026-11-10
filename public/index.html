@@ -20,7 +20,7 @@
         <link rel="preload" href="/github.png" as="image" />
         <link rel="preload" href="/source.png" as="image" />
         <link rel="preload" href="/search-for-function.png" as="image" />
-        <link rel="preload" href="/loading.png" as="image" />
+        <link rel="preload" href="/loading.png" as="image" fetchpriority="high" />
         <link rel="modulepreload" href="/node_module/fuse/dist/fuse-worker.mjs" />
 
         <meta name="description" content="View the decompiled Geometry Dash source from the comfort of your home!" />
@@ -85,7 +85,7 @@
                     </div>
                 </div>
                 <img id="http-cat-image" src="https://http.cat/404" style="display: none" />
-                <img id="loading-spinner" src="/loading.png" />
+                <img id="loading-spinner" src="/loading.png" fetchpriority="high" />
             </div>
 
             <div id="code-editors" style="display: none">
